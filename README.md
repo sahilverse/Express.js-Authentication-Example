@@ -33,8 +33,10 @@ This is a simple authentication example using Express.js. It demonstrates how to
 3. Create a `.env` file in the root directory and add the following:
    ```env
    PORT=5000
-   MONGO_URI=your_mongodb_connection_string
-   JWT_SECRET=your_jwt_secret
+   MONGO_URI=your_database_url
+   ACCESS_TOKEN_SECRET=this_is_a_secret_key
+   REFRESH_TOKEN_SECRET=this_is_a_refresh_secret_key
+   CORS_ORIGIN=http://localhost:5173
    ```
 
 4. Start the server:
