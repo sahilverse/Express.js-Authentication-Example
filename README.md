@@ -41,7 +41,7 @@ This is a simple authentication example using Express.js. It demonstrates how to
 
 4. Start the server:
    ```sh
-   npm start
+   npm run dev
    ```
 
 ## API Endpoints
