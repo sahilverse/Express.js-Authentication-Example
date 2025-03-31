@@ -139,7 +139,12 @@ exports.refreshToken = (req, res) => {
         }
 
         // Verify refresh token
-        const user = JwtUtil.verifyRefreshToken(refreshToken);
+        let user = JwtUtil.verifyRefreshToken(refreshToken);
+        
+        user = {
+            ...user,
+            _id: user.id,
+        }
 
 
         if (!user) {
