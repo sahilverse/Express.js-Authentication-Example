@@ -138,27 +138,27 @@ exports.refreshToken = (req, res) => {
             return res.status(401).json({ message: 'Refresh token not found' });
         }
 
-        // Verify refresh token
-        let user = JwtUtil.verifyRefreshToken(refreshToken);
-        
-        user = {
-            ...user,
-            _id: user.id,
+       
+        const userData = JwtUtil.verifyRefreshToken(refreshToken)
+
+        if (!userData) {
+            return res.status(403).json({ message: "Invalid or expired refresh token" })
         }
 
-
+        const user = await User.findById(userData.id).select("-password");
         if (!user) {
-            return res.status(403).json({ message: 'Invalid or expired refresh token' });
+            return res.status(404).json({ message: "User not found" })
         }
 
+        const newAccessToken = JwtUtil.generateAccessToken(user)
 
-        const { accessToken: newAccessToken } = generateTokenResponse(user);
-
-        // Send response
         res.json({
             accessToken: newAccessToken,
-            user
-        });
+            user:{
+                ...user,
+                id: user._id
+            }
+        })
     } catch (error) {
         console.error('Token refresh error:', error);
 
