@@ -83,5 +83,5 @@ This is a simple authentication example using Express.js. It demonstrates how to
 This project is licensed under the MIT License.
 
 ## Contact
-For any inquiries, contact [your-email@example.com](mailto:your-email@example.com).
+For any inquiries, contact [your-email@example.com](mailto:the.sahil.verse@gmail.com).
 
