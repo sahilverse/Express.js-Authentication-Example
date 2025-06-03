@@ -79,19 +79,6 @@ This is a simple authentication example using Express.js. It demonstrates how to
   }
   ```
 
-### Protected Route
-- **Endpoint:** `GET /api/protected`
-- **Headers:**
-  ```
-  Authorization: Bearer your_jwt_token
-  ```
-- **Response:**
-  ```json
-  {
-    "message": "Protected content"
-  }
-  ```
-
 ## License
 This project is licensed under the MIT License.
 
