@@ -129,36 +129,53 @@ exports.login = async (req, res) => {
     }
 };
 
-exports.refreshToken = (req, res) => {
+exports.refreshToken = async (req, res) => {
     try {
-        const refreshToken = req.headers.cookie
-            ? req.headers.cookie.split('; ').find(row => row.startsWith('refreshToken=')).split('=')[1]
-            : req.cookies.refreshToken;
+        const refreshToken =
+            req.cookies?.refreshToken ||
+            req.headers.authorization?.split(" ")[1]
+
         if (!refreshToken) {
             return res.status(401).json({ message: 'Refresh token not found' });
         }
 
-       
-        const userData = JwtUtil.verifyRefreshToken(refreshToken)
+        const userData = JwtUtil.verifyRefreshToken(refreshToken);
 
         if (!userData) {
-            return res.status(403).json({ message: "Invalid or expired refresh token" })
+            return res.status(403).json({ message: "Invalid or expired refresh token" });
         }
 
         const user = await User.findById(userData.id).select("-password");
         if (!user) {
-            return res.status(404).json({ message: "User not found" })
+            return res.status(404).json({ message: "User not found" });
         }
 
-        const newAccessToken = JwtUtil.generateAccessToken(user)
+        const newAccessToken = JwtUtil.generateAccessToken(user);
+        const newRefreshToken = JwtUtil.generateRefreshToken(user);
+
+        // Send tokens via HTTP-only cookies
+        res.cookie('refreshToken', newRefreshToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'Strict',
+            maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+        });
+
+        res.cookie('accessToken', newAccessToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'Strict',
+            maxAge: 15 * 60 * 1000 // 15 minutes
+        });
 
         res.json({
             accessToken: newAccessToken,
-            user:{
-                ...user,
+            refreshToken: newRefreshToken,
+            user: {
+                ...user.toObject(),
                 id: user._id
             }
-        })
+        });
     } catch (error) {
         console.error('Token refresh error:', error);
 
