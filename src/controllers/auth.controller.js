@@ -133,7 +133,7 @@ exports.refreshToken = async (req, res) => {
     try {
         const refreshToken =
             req.cookies?.refreshToken ||
-            req.headers.authorization?.split(" ")[1]
+            req.body?.refreshToken
 
         if (!refreshToken) {
             return res.status(401).json({ message: 'Refresh token not found' });
